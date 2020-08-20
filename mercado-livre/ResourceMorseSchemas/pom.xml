@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.mercado.livre.morse.resourcemorse</groupId>
+	<artifactId>ResourceMorseSchemas</artifactId>
+	<name>ResourceMorseSchemas</name>
+	<version>0.0.1-SNAPSHOT</version>
+	
+	<packaging>pom</packaging>
+	
+	<parent>
+		<groupId>com.tlf.oss</groupId>
+		<artifactId>OSSProjectParent</artifactId>
+		<version>1.0</version>
+	</parent>
+	
+	<properties>
+		<sonar.coverage.exclusions>**/*.java</sonar.coverage.exclusions>
+		<sonar.cpd.exclusions>**/*.java</sonar.cpd.exclusions>
+	</properties>
+	
+	<modules>
+		<module>ResourceMorseSchemas-entities</module>		
+	</modules>
+</project>

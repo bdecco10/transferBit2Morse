@@ -1,0 +1,16 @@
+resource:
+  url: localhost
+  port: 8080
+morse:
+  host: localhost
+  port: 9080
+spring:
+  application:
+    name: resourceBusinessapps
+  cloud: 
+    config:
+      uri: http://${morse.host}:${morse.port}
+
+management:
+  security:
+    enabled: false

@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.mercado.livre.morse.resourcemorsebusiness</groupId>
+	<artifactId>ResourceMorseBusiness</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>ResourceMorseBusiness</name>
+	<packaging>pom</packaging>
+
+	<parent>
+		<groupId>project.parent</groupId>
+		<artifactId>project-parent</artifactId>
+		<version>1.0</version>
+	</parent>
+
+	<modules>
+		<module>ResourceMorseBusiness-api</module>
+		<module>ResourceMorseBusiness-core</module>
+	</modules>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.tlf.oss</groupId>
+			<artifactId>OSSCommons-util</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>wsdl4j</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-simple</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+	</dependencies>
+	<!-- <build> <plugins> <plugin> <groupId>com.spotify</groupId> <artifactId>dockerfile-maven-plugin</artifactId> 
+		<version>1.3.6</version> <configuration> <buildArgs> <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE> 
+		</buildArgs> </configuration> </plugin> </plugins> </build> -->
+</project>

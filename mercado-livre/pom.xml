@@ -1,0 +1,610 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>project-parent</artifactId>
+	<groupId>project.parent</groupId>
+	<name>project-parent</name>
+	<packaging>pom</packaging>
+	<version>1.0</version>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.4.2.RELEASE</version>
+	</parent>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<docker.plugin.version>0.4.13</docker.plugin.version>
+		<docker.plugin.baseImage>jboss/base-jdk:8</docker.plugin.baseImage>
+		<docker.plugin.imageSimpleName>sigres-${project.artifactId}</docker.plugin.imageSimpleName>
+		<docker.plugin.imageName>${docker.plugin.registryUrl}${docker.plugin.imageSimpleName}</docker.plugin.imageName>
+		<docker.plugin.jarFile>${project.build.finalName}.jar</docker.plugin.jarFile>
+		<docker.plugin.user>jboss</docker.plugin.user>
+		<docker.plugin.entryPoint>["java", "-jar","${docker.plugin.homeFolder}/${docker.plugin.jarFile}"]</docker.plugin.entryPoint>
+		<cxf.version>3.0.5</cxf.version>
+		<metrics-influxdb.version>0.9.3</metrics-influxdb.version>
+		<dropwizard-metrics.version>3.1.2</dropwizard-metrics.version>
+		<metrics-spring.version>3.1.3</metrics-spring.version>
+		<prometheus.version>0.0.18</prometheus.version>
+		<org.mapstruct.version>1.1.0.Beta2</org.mapstruct.version>
+	</properties>
+
+	<modules>
+		<module>ResourceMorseSchemas</module>
+		<module>ResourceMorseBusiness</module>
+	</modules>
+	<repositories>
+		<repository>
+			<id>xbib</id>
+			<url>http://xbib.org/repository</url>
+		</repository>
+		<!-- Habilitando novo repositório central do Maven para corrigir erro com 
+			certificado ssl -->
+		<repository>
+			<id>central</id>
+			<url>https://repo1.maven.org/maven2/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</repository>
+		<!-- Oracle Maven Repository -> Vide https://blogs.oracle.com/dev2dev/entry/how_to_get_oracle_jdbc -->
+		<repository>
+			<id>maven.oracle.com</id>
+			<name>oracle-maven-repo</name>
+			<url>https://maven.oracle.com</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<!-- Oracle Maven Plugin Repository -> https://blogs.oracle.com/dev2dev/entry/how_to_get_oracle_jdbc -->
+		<pluginRepository>
+			<id>maven.oracle.com</id>
+			<name>oracle-maven-repo</name>
+			<url>https://maven.oracle.com</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</releases>
+		</pluginRepository>
+		<!-- Habilitando novo repositório central do Maven para corrigir erro com 
+			certificado ssl -->
+		<pluginRepository>
+			<id>central</id>
+			<url>https://repo1.maven.org/maven2/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+	<dependencies>
+		<!-- Removing Tomcat's Connection Pool -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.tomcat</groupId>
+					<artifactId>tomcat-jdbc</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- Adding Hikari Connection Pool -->
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<!-- Documentacao REST -->
+		<dependency>
+			<groupId>io.swagger</groupId>
+			<artifactId>swagger-jaxrs</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<!-- Project Lombok - Reducing boilerplate code on POJOs -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.ws</groupId>
+			<artifactId>spring-ws-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.apache.tomcat/tomcat-catalina -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-catalina</artifactId>
+			<version>7.0.27</version>
+		</dependency>
+
+		<!-- Hystrix -->
+		<dependency>
+			<groupId>com.netflix.hystrix</groupId>
+			<artifactId>hystrix-javanica</artifactId>
+			<version>1.5.8</version>
+		</dependency>
+		<!-- Spring Cloud -->
+<!-- 		<dependency>
+			<groupId>commons-configurations</groupId>
+			<artifactId>commons-configurations</artifactId>
+			<version>1.10</version>
+		</dependency>
+ -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>29.0-jre</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-dependencies</artifactId>
+			<version>Brixton.SR4</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+		<!-- Consul Dependencies -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-consul-dependencies</artifactId>
+			<version>1.0.2.RELEASE</version>
+			<type>pom</type>
+			<scope>import</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-netflix-hystrix-dashboard</artifactId>
+			<version>1.0.0.RELEASE</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-netflix-eureka-server</artifactId>
+			<version>1.1.6.RELEASE</version>
+		</dependency>
+		<!-- Apache CXF -->
+		<dependency>
+			<!-- JAX-WS -->
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<!-- JAX-RS -->
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxrs</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<!-- Geração de WADL para documentação REST -->
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-service-description</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<!-- HTTP Transport -->
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-client</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<!-- JAX-WS -->
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-core</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<!-- metric -->
+		<dependency>
+			<groupId>io.dropwizard.metrics</groupId>
+			<artifactId>metrics-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.dropwizard.metrics</groupId>
+			<artifactId>metrics-jvm</artifactId>
+			<version>${dropwizard-metrics.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.dropwizard.metrics</groupId>
+			<artifactId>metrics-annotation</artifactId>
+			<version>${dropwizard-metrics.version}</version>
+		</dependency>
+		<!-- Lib para metric influxdb -->
+		<dependency>
+			<groupId>com.github.davidb</groupId>
+			<artifactId>metrics-influxdb</artifactId>
+			<version>${metrics-influxdb.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ryantenney.metrics</groupId>
+			<artifactId>metrics-spring</artifactId>
+			<version>${metrics-spring.version}</version>
+		</dependency>
+		<!-- INICIO - Dependecias para uso do javamelody -->
+		<dependency>
+			<groupId>net.bull.javamelody</groupId>
+			<artifactId>javamelody-core</artifactId>
+			<version>1.62.0</version>
+		</dependency>
+		<!-- export to xml http://localhost:8080/monitoring?format=xml -->
+		<dependency>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.4.2</version>
+		</dependency>
+		<!-- export to json http://localhost:8080/monitoring?format=xml -->
+		<dependency>
+			<groupId>org.jrobin</groupId>
+			<artifactId>jrobin</artifactId>
+			<version>1.5.9</version>
+		</dependency>
+		<!-- FIM - Dependecias para uso do javamelody -->
+		<!-- Suporte para metricas Prometheus -->
+		<dependency>
+			<!-- Hotspot JVM metrics -->
+			<groupId>io.prometheus</groupId>
+			<artifactId>simpleclient_hotspot</artifactId>
+			<version>${prometheus.version}</version>
+		</dependency>
+		<dependency>
+			<!-- Exposition servlet -->
+			<groupId>io.prometheus</groupId>
+			<artifactId>simpleclient_servlet</artifactId>
+			<version>${prometheus.version}</version>
+		</dependency>
+		<dependency>
+			<!-- The client -->
+			<groupId>io.prometheus</groupId>
+			<artifactId>simpleclient</artifactId>
+			<version>${prometheus.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-nosql</artifactId>
+			<version>2.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mapstruct</groupId>
+			<artifactId>mapstruct-jdk8</artifactId>
+			<!-- use mapstruct-jdk8 for Java 8 or higher -->
+			<version>${org.mapstruct.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<pluginManagement>
+			<plugins>
+				<!-- Plugin para execução de aplicações Spring Boot pelo Maven -->
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+					<!-- <executions> -->
+					<!-- <execution> -->
+					<!-- <goals> -->
+					<!-- <goal>repackage</goal> -->
+					<!-- </goals> -->
+					<!-- </execution> -->
+					<!-- </executions> -->
+				</plugin>
+				<!-- Plugin para geração de código Java a partir de WSDL -->
+				<plugin>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-codegen-plugin</artifactId>
+					<version>${cxf.version}</version>
+					<executions>
+						<execution>
+							<id>generate-sources</id>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>wsdl2java</goal>
+							</goals>
+							<configuration>
+								<sourceRoot>${project.build.directory}/generated-cxf</sourceRoot>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<!-- Plugin para geração de código Java a partir de XSD -->
+				<plugin>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-xjc-plugin</artifactId>
+					<version>${cxf.version}</version>
+					<configuration>
+						<extensions>
+							<extension>org.apache.cxf.xjcplugins:cxf-xjc-dv:${cxf.version}</extension>
+						</extensions>
+					</configuration>
+					<executions>
+						<execution>
+							<id>generate-sources</id>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>xsdtojava</goal>
+							</goals>
+							<configuration>
+								<sourceRoot>${project.build.directory}/generated-cxf</sourceRoot>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<executions>
+						<execution>
+							<phase>generate-sources</phase>
+							<goals>
+								<goal>add-source</goal>
+							</goals>
+							<configuration>
+								<sources>
+									<source>${project.build.directory}-cxf</source>
+								</sources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<!-- This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.cxf</groupId>
+										<artifactId>cxf-codegen-plugin</artifactId>
+										<versionRange>[3.0.5,)</versionRange>
+										<goals>
+											<goal>wsdl2java</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.cxf</groupId>
+										<artifactId>cxf-xjc-plugin</artifactId>
+										<versionRange>[3.0.5,)</versionRange>
+										<goals>
+											<goal>xsdtojava</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.6,)</versionRange>
+										<goals>
+											<goal>unpack</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.e-gineering</groupId>
+										<artifactId>gitflow-helper-maven-plugin</artifactId>
+										<versionRange>[1.2,)</versionRange>
+										<goals>
+											<goal>enforce-versions</goal>
+											<goal>retarget-deploy</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+				<!-- Plugins para construção e deploy de imagens de Docker -->
+				<plugin>
+					<!-- Dependency plugin para descompactar arquivos do commons-docker-entrypoint -->
+					<artifactId>maven-dependency-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>unpack-docker-entrypoint</id>
+							<!-- <phase>generate-resources</phase> -->
+							<phase>none</phase>
+							<!-- mantendo essa execução desabilitada por padrão -->
+							<goals>
+								<goal>unpack</goal>
+							</goals>
+							<configuration>
+								<artifactItems>
+									<artifactItem>
+										<groupId>com.tlf.br.oss.sigres</groupId>
+										<artifactId>commons-docker-entrypoint</artifactId>
+										<version>${project.version}</version>
+										<type>zip</type>
+										<classifier>docker</classifier>
+										<overWrite>false</overWrite>
+										<outputDirectory>${project.build.directory}/entrypoint</outputDirectory>
+									</artifactItem>
+								</artifactItems>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<!-- Usando resources plugin para filtrar Dockerfile -->
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>3.0.2</version>
+					<executions>
+						<execution>
+							<id>prepare-dockerfile</id>
+							<!-- <phase>process-resources</phase> -->
+							<phase>none</phase>
+							<!-- mantendo essa execução desabilitada por padrão -->
+							<goals>
+								<goal>copy-resources</goal>
+							</goals>
+							<configuration>
+								<outputDirectory>${project.build.directory}/docker-ready</outputDirectory>
+								<useDefaultDelimiters>true</useDefaultDelimiters>
+								<resources>
+									<resource>
+										<directory>${project.build.directory}/entrypoint</directory>
+										<filtering>true</filtering>
+										<includes>
+											<!-- Inclui filtro para Dockerfile -->
+											<include>Dockerfile</include>
+										</includes>
+									</resource>
+									<resource>
+										<directory>${project.build.directory}/entrypoint</directory>
+										<filtering>false</filtering>
+										<excludes>
+											<!-- Evita filtro para outros arquivos -->
+											<exclude>Dockerfile</exclude>
+										</excludes>
+									</resource>
+								</resources>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<!-- docker-maven-plugin para construir e publicar imagens de container 
+						docker -->
+					<groupId>com.spotify</groupId>
+					<artifactId>docker-maven-plugin</artifactId>
+					<version>0.4.13</version>
+					<configuration>
+						<imageName>${docker.plugin.imageName}:${project.version}</imageName>
+						<dockerDirectory>${project.build.directory}/docker-ready</dockerDirectory>
+						<resources>
+							<resource>
+								<targetPath>${docker.plugin.homeFolder}</targetPath>
+								<directory>${project.build.directory}</directory>
+								<include>${docker.plugin.jarFile}</include>
+							</resource>
+						</resources>
+					</configuration>
+					<executions>
+						<execution>
+							<id>build-docker-image</id>
+							<phase>install</phase>
+							<goals>
+								<goal>build</goal>
+							</goals>
+						</execution>
+						<execution>
+							<id>push-docker-image</id>
+							<phase>deploy</phase>
+							<goals>
+								<goal>push</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>com.spotify</groupId>
+				<artifactId>docker-maven-plugin</artifactId>
+				<configuration>
+					<skipDocker>true</skipDocker>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>add-commit-id</id>
+			<activation>
+				<property>
+					<name>commitId</name>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.spotify</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<configuration>
+							<imageName>${docker.plugin.imageName}:${project.version}-${commitId}</imageName>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<!-- Perfil para configuração de construção de imagens Docker utilizado 
+			pela Indra -->
+		<profile>
+			<id>docker-mercado-livre</id>
+			<activation>
+				<property>
+					<name>jenkins-mercado-livre</name>
+				</property>
+			</activation>
+			<properties>
+				<!-- <docker.plugin.registryUrl>localhost:5002/</docker.plugin.registryUrl> -->
+				<docker.plugin.entryPoint>["java",
+					"-Dserver.contextPath=/${project.artifactId}", "-jar",
+					"${docker.plugin.homeFolder}/${docker.plugin.jarFile}"]</docker.plugin.entryPoint>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>com.spotify</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

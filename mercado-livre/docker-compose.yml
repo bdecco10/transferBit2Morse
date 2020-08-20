@@ -1,0 +1,32 @@
+---
+version: '2'
+services:
+  resourceMorseapps:
+    image: bdecco/resourcemorse-jar
+    environment:
+      - spring.profiles.active=desenv
+      - morse.port=9080
+      - HTTP_PROXY=http://bdecco:Br1005De1990@proxylatam.indra.es:8080
+      - HTTPS_PROXY=http://bdecco:Br1005De1990@proxylatam.indra.es:8080
+      - http_proxy=http://bdecco:Br1005De1990@proxylatam.indra.es:8080
+      - https_proxy=http://bdecco:Br1005De1990@proxylatam.indra.es:8080
+      - no_proxy=localhost,127.0.0.0/8,::1,10.129.226.2,200.17.202.197,*indraweb.net,indra.es,config-server
+      - NO_PROXY=localhost,127.0.0.0/8,::1,10.129.226.2,200.17.202.197,*indraweb.net,indra.es,config-server
+    ports:
+      - 8081:8080
+    privileged: true
+    links:
+      - config-server
+  config-server:
+    image: config-server
+    environment:
+      - user=bdecco
+      - pass=Br1005De1990
+      - HTTP_PROXY=http://bdecco:Br1005De1990@proxylatam.indra.es:8080
+      - HTTPS_PROXY=http://bdecco:Br1005De1990@proxylatam.indra.es:8080
+      - http_proxy=http://bdecco:Br1005De1990@proxylatam.indra.es:8080
+      - https_proxy=http://bdecco:Br1005De1990@proxylatam.indra.es:8080
+      - no_proxy=localhost,127.0.0.0/8,::1,10.129.226.2,200.17.202.197,*indraweb.net,indra.es,config-server
+      - NO_PROXY=localhost,127.0.0.0/8,::1,10.129.226.2,200.17.202.197,*indraweb.net,indra.es,config-server
+    ports:
+      - 9080:9080

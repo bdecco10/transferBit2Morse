@@ -1,0 +1,63 @@
+<!-- edited with XMLSpy v2007 (http://www.altova.com) by R329506 (EMBRACE) -->
+<xs:schema
+	xmlns:tns="http://mercadolivre.com/morseResource"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://mercadolivre.com/morseResource"
+	elementFormDefault="qualified">
+
+	<xs:complexType name="MorseBits">
+		<xs:sequence>
+			<xs:element name="decodeBits2Morse" type="xs:string">
+    </xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="MorseHuman">
+		<xs:sequence>
+			<xs:element name="translate2Human" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Result">
+		<xs:sequence>
+			<xs:element name="code" type="xs:string" minOccurs="0" />
+			<xs:element name="description" type="xs:string" minOccurs="0" />
+			<xs:element name="responseStatus" type="xs:string" minOccurs="0" />
+			<xs:element name="statusDetail" type="xs:string" minOccurs="0" />
+			<xs:element name="statusCode" type="xs:string" minOccurs="0" />
+			<xs:element name="System" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:element name="MorseTranslateRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="morseTranslate" type="tns:MorseHuman" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="MorseTranslateResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="morseResult" type="tns:Result" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="MorseBitsRequest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="morseBits" type="tns:MorseBits" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="MorseBitsResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="morseResult" type="tns:Result" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>
